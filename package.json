@@ -1,0 +1,16 @@
+{
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "4FuN",
+  "dependencies": {
+    "express": "^4.16.4",
+    "ojsama": "^1.2.1",
+    "axios": "*"
+  },
+  "engines": {
+    "node": "10.x"
+  },
+  "license": "MIT"
+}

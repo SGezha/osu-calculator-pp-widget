@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Calculator PP</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <link rel="stylesheet" href="/style.css">
+  <link href="https://use.fontawesome.com/releases/v5.10.1/css/all.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <div :style="{ background: 'url(https://assets.ppy.sh/beatmaps/' + bmid + '/covers/cover.jpg) center center / cover' }" id="top">
+      <div class="black"></div>
+      <div class="title">
+        <h1 class="title-name"> {{ title.title }} </h1>
+        <h2 class="artist"> {{ title.artist }} </h2>
+        <div class="diff"> <i class="fas fa-crosshairs"></i> {{ title.diff }} </div>
+      </div>
+      <div class="stats">
+        <div class="stars"> {{ stats.star }} <i class="fas fa-star"></i> </div>
+        <div class="mini-stats">
+          <div class="ar"> AR: {{ stats.ar }} </div>
+          <div class="od"> OD: {{ stats.od }} </div>
+          <div class="bpm"> {{ parseInt(stats.bpm) }} BPM </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="main">
+      <div class="input">
+        <div class="input-block">
+            <div class="input-inner"><span>Accuracy:</span><input @change="update()" v-model="acc" :value="acc + '%'" type="text"></div>
+            <div class="input-inner"><span>Combo:</span><input @change="update()" v-model="combo" :value="combo + 'x'" type="text"></div>
+            <div class="input-inner"><span>Misses:</span><input @change="update()" v-model="miss" :value="miss + 'x'" type="text"></div>
+          </div>
+      </div>
+      <div class="mods">
+        <template v-for="m in mods">
+          <div @click="if(m.active) {m.active = false; updateMods(false, m.value);} else {m.active = true; updateMods(true, m.value);}; update();" :class="{ active: m.active }" class="mods-block">
+            <img :src="m.img" class="mods-img">
+            <div class="mods-name"> {{ m.name }} </div>
+          </div>
+        </template>
+      </div>
+    </div>
+    
+    <div id="result">
+      <div class="bg"></div>
+      <span class="result"> {{ "That's about " + parseInt(pp) + "pp." }} </span>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        pp: 0,
+        bmid: 0,
+        acc: 100,
+        combo: -1,
+        miss: -1,
+        modsNum: 0,
+        stats: {},
+        mods: [{ name: "HR", value: 16, active: false, img: "https://cdn.glitch.com/14a5292e-26af-425f-9040-b1d25d025a87%2Fhr.png?v=1569173938463" },{ name: "DT", value: 64, active: false, img: "https://cdn.glitch.com/14a5292e-26af-425f-9040-b1d25d025a87%2Fdt.png?v=1569173938068" },{ name: "HD", value: 8, active: false, img: "https://cdn.glitch.com/14a5292e-26af-425f-9040-b1d25d025a87%2Fhd.png?v=1569173938365" },{ name: "FL", value: 1024, active: false, img: "https://cdn.glitch.com/14a5292e-26af-425f-9040-b1d25d025a87%2Ffl.png?v=1569173938260" },{ name: "EZ", value: 2, active: false, img: "https://cdn.glitch.com/14a5292e-26af-425f-9040-b1d25d025a87%2Fez.png?v=1569173938159" },{ name: "HF", value: 256, active: false, img: "https://cdn.glitch.com/14a5292e-26af-425f-9040-b1d25d025a87%2Fht.png?v=1569173938211" }],
+        title: ""
+      },
+      created: function () {
+        this.update();
+      },
+      methods: {
+        update: function () {
+          axios.get(`/calc?id=${window.location.href.split("?b=")[1]}&mods=${this.modsNum}&acc=${this.acc.toString().replace("%", "")}&combo=${this.combo.toString().replace("x", "")}&miss=${this.miss.toString().replace("x", "")}`)
+          .then(res => {
+            let r = res.data;
+            this.pp = r.pp;
+            this.bmid = r.bmid;
+            this.title = r.title;
+            this.miss = r.miss + "x";
+            this.combo = r.combo + "x";
+            this.acc = r.acc + "%";
+            this.stats = r.stats;
+            document.getElementById("app").style.opacity = "1";
+          })
+        },
+        updateMods: function (op, value) {
+          if(op) { this.modsNum += value; } else { this.modsNum -= value; }
+        }
+      }
+    })
+  </script>
+</body>
+</html>
