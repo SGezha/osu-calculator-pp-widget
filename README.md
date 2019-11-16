@@ -1,4 +1,4 @@
-# osu!Calculator PP [DEMO](http://calcpp.glitch.me/?b=1605148)
+# osu!Calculator PP [DEMO](https://calcpp.glitch.me/?b=1605148)
 [![](https://puu.sh/Epaod.jpg)](https://puu.sh/Epaod.jpg)
 ## How to use
 Add to your site **code** ✔
