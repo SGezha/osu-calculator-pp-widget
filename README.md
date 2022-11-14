@@ -9,5 +9,5 @@ or
 ```bash
  clone repository 😉
  $ npm i
- $ npm start`
+ $ npm start
 ```
